@@ -1,0 +1,27 @@
+<section class="etudiant-hero">
+  <div>
+    <p class="eyebrow">Espace Etudiant</p>
+    <h2>Bienvenue {{ profile()?.prenom || 'Etudiant' }} {{ profile()?.nom || '' }}</h2>
+    <p class="lede">Accede rapidement a tes cours, tes notes et tes seances.</p>
+  </div>
+  <div class="badge" *ngIf="profile() as p">
+    <span class="role">{{ p.role }}</span>
+    <span class="email">{{ p.email }}</span>
+  </div>
+</section>
+
+<nav class="tabs">
+  <a
+    *ngFor="let item of navItems"
+    [routerLink]="item.path"
+    routerLinkActive="active"
+    [routerLinkActiveOptions]="{ exact: item.path.endsWith('/dashboard') }"
+  >
+    <span class="label">{{ item.label }}</span>
+    <span class="hint">{{ item.description }}</span>
+  </a>
+</nav>
+
+<section class="tab-content">
+  <router-outlet />
+</section>

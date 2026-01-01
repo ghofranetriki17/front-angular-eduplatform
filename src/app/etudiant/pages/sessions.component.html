@@ -1,0 +1,28 @@
+<section class="panel">
+  <header class="panel__header">
+    <div>
+      <p class="eyebrow">Sessions</p>
+      <h3>Mes seances planifiees</h3>
+      <p class="lede">Connecte cette page a l API des inscriptions pour afficher les prochaines seances.</p>
+    </div>
+    <div class="tag">GET /api/inscriptions/etudiant/{{ '{' }}id{{ '}' }}</div>
+  </header>
+
+  <div class="content">
+    <article class="card">
+      <h4>Actions rapides</h4>
+      <ul>
+        <li *ngFor="let action of actions">{{ action }}</li>
+      </ul>
+    </article>
+    <article class="card">
+      <h4>Flux suggere</h4>
+      <p>Recupere les inscriptions actives (<code>?actives=true</code>), puis affiche la session courante pour chaque cours.</p>
+      <p>Utilise ces donnees pour alimenter un calendrier ou une timeline.</p>
+    </article>
+  </div>
+
+  <div class="empty">
+    <p>Les seances apparaitront ici une fois la connexion a l API en place.</p>
+  </div>
+</section>

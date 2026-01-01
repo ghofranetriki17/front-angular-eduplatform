@@ -1,0 +1,28 @@
+<section class="panel">
+  <header class="panel__header">
+    <div>
+      <p class="eyebrow">Cours</p>
+      <h3>Mes cours inscrits</h3>
+      <p class="lede">Connecte cette page a l API pour afficher les cours actifs et archives.</p>
+    </div>
+    <div class="tag">GET /api/cours?actifs=true</div>
+  </header>
+
+  <div class="content">
+    <article class="card">
+      <h4>Actions rapides</h4>
+      <ul>
+        <li *ngFor="let action of actions">{{ action }}</li>
+      </ul>
+    </article>
+    <article class="card">
+      <h4>Point d entree</h4>
+      <p>Les cours peuvent etre recuperes via <code>/api/inscriptions/etudiant/{{ '{' }}id{{ '}' }}</code> puis enrichis avec <code>/api/cours/{{ '{' }}code{{ '}' }}</code>.</p>
+      <p>Utilise les liens ci-dessus pour naviguer entre les sections.</p>
+    </article>
+  </div>
+
+  <div class="empty">
+    <p>Pas encore de cours charges. Branche l appel HTTP ici pour remplir la liste.</p>
+  </div>
+</section>

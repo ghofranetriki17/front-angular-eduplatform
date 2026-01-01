@@ -11,7 +11,30 @@ export const routes: Routes = [
     path: 'etudiant',
     canActivate: [authGuard],
     data: { roles: ['ETUDIANT'] },
-    loadComponent: () => import('./features/etudiant-dashboard.component').then(m => m.EtudiantDashboardComponent)
+    loadComponent: () => import('./etudiant/layout/etudiant-layout.component').then(m => m.EtudiantLayoutComponent),
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'dashboard'
+      },
+      {
+        path: 'dashboard',
+        loadComponent: () => import('./features/etudiant-dashboard.component').then(m => m.EtudiantDashboardComponent)
+      },
+      {
+        path: 'notes',
+        loadComponent: () => import('./etudiant/pages/notes.component').then(m => m.NotesComponent)
+      },
+      {
+        path: 'cours',
+        loadComponent: () => import('./etudiant/pages/cours.component').then(m => m.CoursComponent)
+      },
+      {
+        path: 'sessions',
+        loadComponent: () => import('./etudiant/pages/sessions.component').then(m => m.SessionsComponent)
+      }
+    ]
   },
   {
     path: 'formateur',
