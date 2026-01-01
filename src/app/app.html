@@ -1,0 +1,34 @@
+<div class="layout">
+  <header class="topbar">
+    <div class="brand">
+      <span class="dot"></span>
+      <div>
+        <p class="eyebrow">Centre Formation</p>
+        <h1>FrontFormation</h1>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <a routerLink="/login" routerLinkActive="active">Connexion</a>
+      <a routerLink="/etudiant" routerLinkActive="active">Espace Étudiant</a>
+      <a routerLink="/formateur" routerLinkActive="active">Espace Formateur</a>
+    </nav>
+
+    <div class="user" *ngIf="isLoggedIn(); else guest">
+      <div class="name">
+        <span class="role">{{ profile()?.role }}</span>
+        <strong>{{ profile()?.prenom }} {{ profile()?.nom }}</strong>
+      </div>
+      <button class="ghost" (click)="logout()">Déconnexion</button>
+    </div>
+    <ng-template #guest>
+      <div class="user">
+        <span class="role">Non connecté</span>
+      </div>
+    </ng-template>
+  </header>
+
+  <main>
+    <router-outlet />
+  </main>
+</div>

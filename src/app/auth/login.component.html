@@ -1,0 +1,29 @@
+<div class="login-page">
+  <div class="glass">
+    <header>
+      <p class="eyebrow">Centre de formation</p>
+      <h1>Connectez-vous</h1>
+      <p class="subtitle">Accès Angular + Spring (Basic Auth)</p>
+    </header>
+
+    <form (ngSubmit)="submit()">
+      <label for="email">Email</label>
+      <input id="email" type="email" name="email" [(ngModel)]="email" placeholder="votre.email@iit.tn" required />
+      <p class="error" *ngIf="emailError">{{ emailError }}</p>
+
+      <label for="password">Mot de passe</label>
+      <input id="password" type="password" name="password" [(ngModel)]="password" placeholder="••••••••" required />
+      <p class="error" *ngIf="passwordError">{{ passwordError }}</p>
+
+      <button type="submit" [disabled]="loading">
+        {{ loading ? 'Connexion…' : 'Se connecter' }}
+      </button>
+      <p class="error" *ngIf="error">{{ error }}</p>
+    </form>
+
+    <footer>
+      <span>Exemple : admin@iit.tn / mot de passe en base (bcrypt)</span>
+      <a routerLink="/">Retour à l'accueil</a>
+    </footer>
+  </div>
+</div>
