@@ -24,6 +24,7 @@ export class EtudiantLayoutComponent {
     { label: 'Tableau de bord', path: '/etudiant/dashboard', description: 'Vue globale et raccourcis' },
     { label: 'Cours', path: '/etudiant/cours', description: 'Modules et inscriptions' },
     { label: 'Notes', path: '/etudiant/notes', description: 'Moyennes et historique' },
-    { label: 'Planning', path: '/etudiant/sessions', description: 'Seances et statut' }
+    { label: 'Planning', path: '/etudiant/sessions', description: 'Seances et statut' },
+    { label: 'Profil', path: '/etudiant/profil', description: 'Infos personnelles' }
   ];
 }

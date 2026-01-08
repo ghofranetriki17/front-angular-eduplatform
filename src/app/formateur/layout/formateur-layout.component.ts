@@ -24,6 +24,7 @@ export class FormateurLayoutComponent {
     { label: 'Tableau de bord', path: '/formateur/dashboard', description: 'Synthese et alertes' },
     { label: 'Cours', path: '/formateur/cours', description: 'Programmes et stats' },
     { label: 'Notes', path: '/formateur/notes', description: 'Saisie et historique' },
-    { label: 'Seances', path: '/formateur/seances', description: 'Planning et statuts' }
+    { label: 'Seances', path: '/formateur/seances', description: 'Planning et statuts' },
+    { label: 'Profil', path: '/formateur/profil', description: 'Infos personnelles' }
   ];
 }

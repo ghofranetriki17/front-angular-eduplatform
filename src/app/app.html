@@ -19,6 +19,7 @@
         <span class="role">{{ profile()?.role }}</span>
         <strong>{{ profile()?.prenom }} {{ profile()?.nom }}</strong>
       </div>
+      <a class="ghost" *ngIf="profileLink()" [routerLink]="profileLink()">Mon profil</a>
       <button class="ghost" (click)="logout()">Deconnexion</button>
     </div>
     <ng-template #guest>

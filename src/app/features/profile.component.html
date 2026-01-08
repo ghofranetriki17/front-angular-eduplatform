@@ -1,0 +1,50 @@
+<section class="profile-page">
+  <header class="page-head">
+    <div>
+      <p class="eyebrow">Mon profil</p>
+      <h2>Informations personnelles</h2>
+      <p class="subtitle">Mettre a jour vos informations et votre mot de passe.</p>
+    </div>
+    <div class="profile-badge" *ngIf="profile() as p">
+      <span class="role">{{ p.role }}</span>
+      <span class="email">{{ p.email }}</span>
+    </div>
+  </header>
+
+  <form class="profile-form" (ngSubmit)="save()">
+    <div class="field">
+      <label>Email</label>
+      <input type="email" [(ngModel)]="email" name="email" required />
+    </div>
+    <div class="field">
+      <label>Nom</label>
+      <input type="text" [(ngModel)]="nom" name="nom" required />
+    </div>
+    <div class="field">
+      <label>Prenom</label>
+      <input type="text" [(ngModel)]="prenom" name="prenom" required />
+    </div>
+    <div class="field">
+      <label>Telephone</label>
+      <input type="text" [(ngModel)]="telephone" name="telephone" />
+    </div>
+    <div class="field">
+      <label>Nouveau mot de passe</label>
+      <input type="password" [(ngModel)]="password" name="password" />
+    </div>
+    <div class="field">
+      <label>Confirmer le mot de passe</label>
+      <input type="password" [(ngModel)]="confirmPassword" name="confirmPassword" />
+    </div>
+
+    <p class="note">Si vous changez l'email ou le mot de passe, la connexion sera mise a jour automatiquement.</p>
+    <p class="status error" *ngIf="error()">{{ error() }}</p>
+    <p class="status success" *ngIf="message()">{{ message() }}</p>
+
+    <div class="actions">
+      <button class="btn" type="submit" [disabled]="saving()">
+        {{ saving() ? 'Enregistrement...' : 'Enregistrer' }}
+      </button>
+    </div>
+  </form>
+</section>

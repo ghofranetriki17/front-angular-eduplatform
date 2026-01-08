@@ -158,6 +158,23 @@
         </li>
       </ul>
     </section>
+
+    <section class="panel">
+      <div class="panel-header">
+        <h3>Cours les plus suivis</h3>
+        <span class="hint">Popularite</span>
+      </div>
+      <p class="empty" *ngIf="!vm.coursPopulaires.length">Aucun cours disponible.</p>
+      <ul class="list" *ngIf="vm.coursPopulaires.length">
+        <li *ngFor="let cours of vm.coursPopulaires">
+          <div>
+            <strong>{{ cours.titre }}</strong>
+            <span>{{ cours.code }}</span>
+          </div>
+          <span class="chip">{{ cours.inscritsActifs }} inscrits</span>
+        </li>
+      </ul>
+    </section>
   </div>
 </section>
 

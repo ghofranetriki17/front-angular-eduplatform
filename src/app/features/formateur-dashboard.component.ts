@@ -32,6 +32,7 @@ export class FormateurDashboardComponent {
     const seancesThisWeek = seances.filter(seance =>
       FormateurDashboardComponent.isWithinDays(seance.dateSeance, 7)
     ).length;
+    const coursPopulaires = data.coursPopulaires ?? [];
     const stats = data.coursStats
       .map(stat => ({
         ...stat,
@@ -53,7 +54,8 @@ export class FormateurDashboardComponent {
       stats,
       coursRisque,
       totalInscrits,
-      nextSeanceLabel
+      nextSeanceLabel,
+      coursPopulaires
     };
   }
 

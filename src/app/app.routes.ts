@@ -29,6 +29,10 @@ export const routes: Routes = [
       {
         path: 'sessions',
         loadComponent: () => import('./etudiant/pages/sessions.component').then(m => m.SessionsComponent)
+      },
+      {
+        path: 'profil',
+        loadComponent: () => import('./features/profile.component').then(m => m.ProfileComponent)
       }
     ]
   },
@@ -54,6 +58,10 @@ export const routes: Routes = [
       {
         path: 'seances',
         loadComponent: () => import('./formateur/pages/seances.component').then(m => m.FormateurSeancesComponent)
+      },
+      {
+        path: 'profil',
+        loadComponent: () => import('./features/profile.component').then(m => m.ProfileComponent)
       }
     ]
   },

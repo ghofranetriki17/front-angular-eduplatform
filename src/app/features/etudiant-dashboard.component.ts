@@ -30,6 +30,7 @@ export class EtudiantDashboardComponent {
     const notes = [...data.dernieresNotes].sort((a, b) =>
       EtudiantDashboardComponent.dateValue(b) - EtudiantDashboardComponent.dateValue(a)
     );
+    const coursPopulaires = data.coursPopulaires ?? [];
     const nextSeance = seances[0] ?? null;
     const lastNote = notes[0] ?? null;
     const missingRoomCount = seances.filter(seance => !seance.salle).length;
@@ -47,6 +48,7 @@ export class EtudiantDashboardComponent {
       ...data,
       seances,
       notes,
+      coursPopulaires,
       nextSeance,
       lastNote,
       missingRoomCount,

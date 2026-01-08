@@ -47,12 +47,19 @@ export interface SeanceResponse {
   formateurNom?: string | null;
 }
 
+export interface PopularCoursResponse {
+  code: string;
+  titre: string;
+  inscritsActifs: number;
+}
+
 export interface DashboardEtudiantResponse {
   inscriptionsActives: number;
   coursActifs: number;
   moyenneGenerale?: number | null;
   prochainesSeances: SeanceResponse[];
   dernieresNotes: NoteResponse[];
+  coursPopulaires: PopularCoursResponse[];
 }
 
 export interface CoursStatsResponse {
@@ -69,6 +76,7 @@ export interface DashboardFormateurResponse {
   notesSaisies: number;
   prochainesSeances: SeanceResponse[];
   coursStats: CoursStatsResponse[];
+  coursPopulaires: PopularCoursResponse[];
 }
 
 export interface CoursMoyenneResponse {

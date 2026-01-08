@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterOutlet, Router } from '@angular/router';
 import { AuthService } from './core/auth.service';
@@ -16,6 +16,19 @@ export class App {
 
   readonly profile = this.auth.profile;
   readonly isLoggedIn = this.auth.isLoggedIn;
+  readonly profileLink = computed(() => {
+    const current = this.profile();
+    if (!current) {
+      return '';
+    }
+    if (current.role === 'ETUDIANT') {
+      return '/etudiant/profil';
+    }
+    if (current.role === 'FORMATEUR') {
+      return '/formateur/profil';
+    }
+    return '';
+  });
 
   constructor() {
     this.auth.ensureProfile().subscribe();

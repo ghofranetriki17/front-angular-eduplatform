@@ -10,6 +10,7 @@ export interface UserProfile {
   email: string;
   nom: string;
   prenom: string;
+  telephone?: string | null;
   role: UserRole;
 }
 
@@ -69,5 +70,35 @@ export class AuthService {
         role: profile.role.toUpperCase() as UserRole
       }))
     );
+  }
+
+  updateProfile(payload: {
+    email?: string | null;
+    nom?: string | null;
+    prenom?: string | null;
+    telephone?: string | null;
+    password?: string | null;
+  }): Observable<UserProfile> {
+    return this.http.put<UserProfile>(`${environment.apiUrl}/api/me`, payload).pipe(
+      map(profile => ({
+        ...profile,
+        role: profile.role.toUpperCase() as UserRole
+      })),
+      tap(profile => {
+        this.profileSignal.set(profile);
+        this.refreshToken(payload.email ?? profile.email, payload.password ?? null);
+      })
+    );
+  }
+
+  private refreshToken(email: string, password: string | null) {
+    const token = this.getToken();
+    if (!token) {
+      return;
+    }
+    const [currentEmail, currentPassword] = atob(token).split(':');
+    const nextEmail = email || currentEmail;
+    const nextPassword = password || currentPassword;
+    localStorage.setItem(this.storageKey, btoa(`${nextEmail}:${nextPassword}`));
   }
 }
