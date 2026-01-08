@@ -31,12 +31,12 @@ export class LoginComponent {
     this.error = '';
 
     if (!this.email) {
-      this.emailError = 'mail';
+      this.emailError = 'Email requis';
       return;
     }
 
     if (!this.password) {
-      this.passwordError = 'password';
+      this.passwordError = 'Mot de passe requis';
       return;
     }
 
@@ -51,8 +51,9 @@ export class LoginComponent {
       },
       error: () => {
         this.loading = false;
-        this.emailError = 'mail';
-        this.passwordError = 'password';
+        this.error = 'Identifiants invalides';
+        this.emailError = 'Email requis';
+        this.passwordError = 'Mot de passe requis';
       }
     });
   }

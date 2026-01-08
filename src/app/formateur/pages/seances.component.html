@@ -1,0 +1,35 @@
+<section class="seances-page">
+  <header class="page-header">
+    <div>
+      <h3>Planning des seances</h3>
+      <p>Suivez vos sessions et mettez a jour les statuts.</p>
+    </div>
+  </header>
+
+  <p class="error" *ngIf="error()">{{ error() }}</p>
+  <p class="loading" *ngIf="loading()">Chargement...</p>
+
+  <section class="panel" *ngIf="!loading()">
+    <div class="panel-header">
+      <h4>Seances a venir</h4>
+      <span class="hint">{{ seances().length }} seances</span>
+    </div>
+    <p class="empty" *ngIf="!seances().length">Aucune seance planifiee.</p>
+    <ul class="list" *ngIf="seances().length">
+      <li *ngFor="let seance of seances()">
+        <div>
+          <strong>{{ seance.coursTitre }}</strong>
+          <span>
+            {{ seance.dateSeance | date: 'dd MMM' }} ? {{ seance.heureDebut }} - {{ seance.heureFin }}
+          </span>
+        </div>
+        <div class="actions">
+          <span class="chip">{{ seance.salle || 'Salle a definir' }}</span>
+          <select [value]="seance.statut" (change)="updateStatut(seance, $any($event.target).value)">
+            <option *ngFor="let statut of statuts" [value]="statut">{{ statut }}</option>
+          </select>
+        </div>
+      </li>
+    </ul>
+  </section>
+</section>

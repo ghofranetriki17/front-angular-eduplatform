@@ -1,5 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { forkJoin } from 'rxjs';
+import { EtudiantApiService } from '../../core/services/etudiant-api.service';
+import { CoursMoyenneResponse, NoteResponse } from '../../core/models/api.models';
 
 @Component({
   selector: 'app-notes',
@@ -9,9 +12,23 @@ import { CommonModule } from '@angular/common';
   styleUrl: './notes.component.css'
 })
 export class NotesComponent {
-  readonly checkpoints = [
-    'Verifier rapidement les notes par cours',
-    'Identifier les evaluations manquantes ou en attente',
-    'Suivre la moyenne globale par session'
-  ];
+  readonly notes = signal<NoteResponse[]>([]);
+  readonly moyennes = signal<CoursMoyenneResponse[]>([]);
+  readonly loading = signal(true);
+
+  constructor(private readonly api: EtudiantApiService) {
+    this.load();
+  }
+
+  private load() {
+    this.loading.set(true);
+    forkJoin([this.api.getNotes(), this.api.getMoyennes()]).subscribe({
+      next: ([notes, moyennes]) => {
+        this.notes.set(notes);
+        this.moyennes.set(moyennes);
+      },
+      error: () => this.loading.set(false),
+      complete: () => this.loading.set(false)
+    });
+  }
 }

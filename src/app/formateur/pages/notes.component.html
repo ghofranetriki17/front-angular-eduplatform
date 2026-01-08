@@ -1,0 +1,67 @@
+<section class="notes-page">
+  <header class="page-header">
+    <div>
+      <h3>Saisie des notes</h3>
+      <p>Selectionnez un cours, un etudiant et enregistrez une evaluation.</p>
+    </div>
+  </header>
+
+  <div class="tabs" *ngIf="cours().length">
+    <button
+      *ngFor="let item of cours()"
+      [class.active]="selectedCours()?.code === item.code"
+      (click)="selectCours(item)"
+    >
+      {{ item.code }}
+    </button>
+  </div>
+
+  <p class="loading" *ngIf="loading()">Chargement...</p>
+  <p class="error" *ngIf="error()">{{ error() }}</p>
+
+  <div class="grid" *ngIf="!loading()">
+    <form class="panel form" (ngSubmit)="submit()">
+      <h4>Nouvelle note</h4>
+      <label>Etudiant</label>
+      <select [(ngModel)]="etudiantId" name="etudiantId" required>
+        <option value="" disabled>Choisir un etudiant</option>
+        <option *ngFor="let etudiant of etudiants()" [value]="etudiant.id">
+          {{ etudiant.prenom }} {{ etudiant.nom }} - {{ etudiant.matricule }}
+        </option>
+      </select>
+
+      <label>Valeur</label>
+      <input type="number" min="0" max="20" step="0.25" [(ngModel)]="valeur" name="valeur" required />
+
+      <label>Type</label>
+      <select [(ngModel)]="typeEvaluation" name="typeEvaluation">
+        <option *ngFor="let type of types" [value]="type">{{ type }}</option>
+      </select>
+
+      <label>Coefficient</label>
+      <input type="number" step="0.1" [(ngModel)]="coefficient" name="coefficient" placeholder="1.0" />
+
+      <label>Commentaire</label>
+      <textarea rows="3" [(ngModel)]="commentaire" name="commentaire"></textarea>
+
+      <button type="submit">Enregistrer</button>
+    </form>
+
+    <section class="panel">
+      <div class="panel-header">
+        <h4>Notes enregistrees</h4>
+        <span class="hint">{{ notesFiltrees().length }} notes</span>
+      </div>
+      <p class="empty" *ngIf="!notesFiltrees().length">Aucune note pour ce cours.</p>
+      <ul class="list" *ngIf="notesFiltrees().length">
+        <li *ngFor="let note of notesFiltrees()">
+          <div>
+            <strong>{{ note.coursTitre }}</strong>
+            <span>{{ note.typeEvaluation }} ? {{ note.dateEvaluation | date: 'dd MMM' }}</span>
+          </div>
+          <span class="grade">{{ note.valeur }}</span>
+        </li>
+      </ul>
+    </section>
+  </div>
+</section>

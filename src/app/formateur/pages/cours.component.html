@@ -1,0 +1,64 @@
+<section class="cours-page">
+  <header class="page-header">
+    <div>
+      <h3>Vos cours</h3>
+      <p>Selectionnez un cours pour voir les etudiants et generer un rapport PDF.</p>
+    </div>
+  </header>
+
+  <p class="loading" *ngIf="loading()">Chargement...</p>
+
+  <div class="grid" *ngIf="!loading()">
+    <section class="cards">
+      <article class="card" *ngFor="let item of cours()">
+        <div>
+          <h4>{{ item.titre }}</h4>
+          <span class="code">{{ item.code }}</span>
+        </div>
+        <p>{{ item.description || 'Description a venir.' }}</p>
+        <div class="meta">
+          <span>{{ item.inscritsActifs }} inscrits actifs</span>
+          <span>Coeff: {{ item.coefficient ?? '-' }}</span>
+        </div>
+        <div class="actions">
+          <button class="ghost" (click)="selectCours(item)">Details</button>
+          <button class="cta" (click)="downloadReport(item)">Rapport PDF</button>
+        </div>
+      </article>
+    </section>
+
+    <aside class="details" *ngIf="selected() as current">
+      <div class="detail-card">
+        <h4>Statistiques - {{ current.titre }}</h4>
+        <div class="stats" *ngIf="stats() as stat">
+          <div>
+            <span class="label">Moyenne</span>
+            <strong>{{ stat.moyenne ?? 0 | number: '1.1-2' }}</strong>
+          </div>
+          <div>
+            <span class="label">Taux de reussite</span>
+            <strong>{{ stat.tauxReussite | number: '1.0-0' }}%</strong>
+          </div>
+          <div>
+            <span class="label">Inscrits actifs</span>
+            <strong>{{ stat.inscritsActifs }}</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-card">
+        <h4>Etudiants inscrits</h4>
+        <p class="empty" *ngIf="!etudiants().length">Aucun etudiant inscrit.</p>
+        <ul class="list" *ngIf="etudiants().length">
+          <li *ngFor="let etudiant of etudiants()">
+            <div>
+              <strong>{{ etudiant.prenom }} {{ etudiant.nom }}</strong>
+              <span>{{ etudiant.matricule }} ? {{ etudiant.groupeNom || 'Sans groupe' }}</span>
+            </div>
+            <span class="chip">{{ etudiant.email }}</span>
+          </li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+</section>

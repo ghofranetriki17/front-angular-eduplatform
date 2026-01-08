@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, computed, signal } from '@angular/core';
-import { catchError, map, of, tap, Observable } from 'rxjs';
+import { catchError, map, of, tap, Observable, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 export type UserRole = 'ADMIN' | 'FORMATEUR' | 'ETUDIANT';
@@ -27,7 +27,11 @@ export class AuthService {
     const token = btoa(`${email}:${password}`);
     localStorage.setItem(this.storageKey, token);
     return this.fetchProfile().pipe(
-      tap(profile => this.profileSignal.set(profile))
+      tap(profile => this.profileSignal.set(profile)),
+      catchError(error => {
+        this.logout();
+        return throwError(() => error);
+      })
     );
   }
 

@@ -1,28 +1,57 @@
-<section class="panel">
-  <header class="panel__header">
+<section class="page">
+  <header class="page-header">
     <div>
-      <p class="eyebrow">Cours</p>
-      <h3>Mes cours inscrits</h3>
-      <p class="lede">Connecte cette page a l API pour afficher les cours actifs et archives.</p>
+      <h3>Mes cours actifs</h3>
+      <p>Suivez les cours ou vous etes deja inscrit.</p>
     </div>
-    <div class="tag">GET /api/cours?actifs=true</div>
+    <span class="pill">{{ cours().length }} cours</span>
   </header>
 
-  <div class="content">
-    <article class="card">
-      <h4>Actions rapides</h4>
-      <ul>
-        <li *ngFor="let action of actions">{{ action }}</li>
-      </ul>
-    </article>
-    <article class="card">
-      <h4>Point d entree</h4>
-      <p>Les cours peuvent etre recuperes via <code>/api/inscriptions/etudiant/{{ '{' }}id{{ '}' }}</code> puis enrichis avec <code>/api/cours/{{ '{' }}code{{ '}' }}</code>.</p>
-      <p>Utilise les liens ci-dessus pour naviguer entre les sections.</p>
+  <p class="error" *ngIf="error()">{{ error() }}</p>
+  <p class="loading" *ngIf="loading()">Chargement...</p>
+
+  <div class="cards" *ngIf="!loading()">
+    <article class="card" *ngFor="let item of cours()">
+      <div class="card-header">
+        <div>
+          <h4>{{ item.titre }}</h4>
+          <span class="code">{{ item.code }}</span>
+        </div>
+        <span class="badge">{{ item.inscritsActifs }} inscrits</span>
+      </div>
+      <p>{{ item.description || 'Description a venir.' }}</p>
+      <div class="meta">
+        <span>Specialite: {{ item.specialite || 'General' }}</span>
+        <span>Formateur: {{ item.formateurNom || 'A definir' }}</span>
+        <span>Coefficient: {{ item.coefficient ?? '-' }}</span>
+      </div>
     </article>
   </div>
 
-  <div class="empty">
-    <p>Pas encore de cours charges. Branche l appel HTTP ici pour remplir la liste.</p>
-  </div>
+  <section class="section">
+    <header class="page-header">
+      <div>
+        <h3>Cours disponibles</h3>
+        <p>Inscrivez-vous aux nouveaux modules.</p>
+      </div>
+      <span class="pill">{{ disponibles().length }} ouverts</span>
+    </header>
+
+    <div class="cards" *ngIf="!loading()">
+      <article class="card" *ngFor="let item of disponibles()">
+        <div class="card-header">
+          <div>
+            <h4>{{ item.titre }}</h4>
+            <span class="code">{{ item.code }}</span>
+          </div>
+          <button class="cta" (click)="inscrire(item)">S'inscrire</button>
+        </div>
+        <p>{{ item.description || 'Description a venir.' }}</p>
+        <div class="meta">
+          <span>Specialite: {{ item.specialite || 'General' }}</span>
+          <span>Formateur: {{ item.formateurNom || 'A definir' }}</span>
+        </div>
+      </article>
+    </div>
+  </section>
 </section>

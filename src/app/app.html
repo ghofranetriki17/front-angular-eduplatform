@@ -1,34 +1,34 @@
-<div class="layout">
-  <header class="topbar">
+<div class="app-shell">
+  <header class="app-header" [class.compact]="isLoggedIn()">
     <div class="brand">
-      <span class="dot"></span>
+      <div class="brand-mark">CF</div>
       <div>
-        <p class="eyebrow">Centre Formation</p>
-        <h1>FrontFormation</h1>
+        <p class="kicker">Centre Formation</p>
+        <h1>Campus Hub</h1>
       </div>
     </div>
 
-    <nav class="nav">
+    <nav class="nav" *ngIf="!isLoggedIn()">
       <a routerLink="/login" routerLinkActive="active">Connexion</a>
-      <a routerLink="/etudiant" routerLinkActive="active">Espace Étudiant</a>
+      <a routerLink="/etudiant" routerLinkActive="active">Espace Etudiant</a>
       <a routerLink="/formateur" routerLinkActive="active">Espace Formateur</a>
     </nav>
 
-    <div class="user" *ngIf="isLoggedIn(); else guest">
-      <div class="name">
+    <div class="profile" *ngIf="isLoggedIn(); else guest">
+      <div class="profile-text">
         <span class="role">{{ profile()?.role }}</span>
         <strong>{{ profile()?.prenom }} {{ profile()?.nom }}</strong>
       </div>
-      <button class="ghost" (click)="logout()">Déconnexion</button>
+      <button class="ghost" (click)="logout()">Deconnexion</button>
     </div>
     <ng-template #guest>
-      <div class="user">
-        <span class="role">Non connecté</span>
+      <div class="profile">
+        <span class="role muted">Non connecte</span>
       </div>
     </ng-template>
   </header>
 
-  <main>
+  <main class="app-main">
     <router-outlet />
   </main>
 </div>

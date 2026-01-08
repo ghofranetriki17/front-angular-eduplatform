@@ -1,29 +1,31 @@
-<div class="login-page">
-  <div class="glass">
-    <header>
-      <p class="eyebrow">Centre de formation</p>
-      <h1>Connectez-vous</h1>
-      <p class="subtitle">Accès Angular + Spring (Basic Auth)</p>
-    </header>
+<section class="login-shell">
+  <div class="login-card">
+    <div class="login-intro">
+      <span class="chip">Acces securise</span>
+      <h2>Connectez-vous</h2>
+      <p class="subtitle">
+        Utilisez vos identifiants pour acceder a votre espace et suivre les cours, notes et seances.
+      </p>
+      <div class="hint">
+        <p><strong>Exemple:</strong> admin@iit.tn</p>
+        <p>Mot de passe: valeur en base (bcrypt)</p>
+      </div>
+      <a routerLink="/" class="link">Retour a l'accueil</a>
+    </div>
 
-    <form (ngSubmit)="submit()">
+    <form class="login-form" (ngSubmit)="submit()">
       <label for="email">Email</label>
       <input id="email" type="email" name="email" [(ngModel)]="email" placeholder="votre.email@iit.tn" required />
-      <p class="error" *ngIf="emailError">{{ emailError }}</p>
+      <p class="error" *ngIf="emailError">Email requis</p>
 
       <label for="password">Mot de passe</label>
-      <input id="password" type="password" name="password" [(ngModel)]="password" placeholder="••••••••" required />
-      <p class="error" *ngIf="passwordError">{{ passwordError }}</p>
+      <input id="password" type="password" name="password" [(ngModel)]="password" placeholder="********" required />
+      <p class="error" *ngIf="passwordError">Mot de passe requis</p>
 
       <button type="submit" [disabled]="loading">
-        {{ loading ? 'Connexion…' : 'Se connecter' }}
+        {{ loading ? 'Connexion...' : 'Se connecter' }}
       </button>
       <p class="error" *ngIf="error">{{ error }}</p>
     </form>
-
-    <footer>
-      <span>Exemple : admin@iit.tn / mot de passe en base (bcrypt)</span>
-      <a routerLink="/">Retour à l'accueil</a>
-    </footer>
   </div>
-</div>
+</section>

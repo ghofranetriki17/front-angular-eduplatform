@@ -1,23 +1,162 @@
-<section class="hero">
-  <div>
-    <p class="eyebrow">Espace Étudiant</p>
-    <h1>{{ greeting() }}</h1>
-    <p class="lede">Bienvenue dans ton espace. Consulte ton emploi du temps, tes notes et tes cours.</p>
+<section class="dashboard" *ngIf="vm$ | async as vm; else loading">
+  <header class="hero">
+    <div class="hero-main">
+      <p class="eyebrow">Tableau de bord etudiant</p>
+      <h2>Bonjour {{ profile()?.prenom || 'etudiant' }}</h2>
+      <p class="subtitle">Synthese du {{ today | date: 'fullDate' }}</p>
+      <div class="hero-pills">
+        <span class="pill">Cours actifs: {{ vm.coursActifs }}</span>
+        <span class="pill">Inscriptions: {{ vm.inscriptionsActives }}</span>
+        <span class="pill">Seances a venir: {{ vm.seances.length }}</span>
+      </div>
+    </div>
+    <div class="hero-actions">
+      <a class="action-card" routerLink="/etudiant/cours">
+        <span class="action-title">Cours</span>
+        <span class="action-sub">Explorer le catalogue</span>
+      </a>
+      <a class="action-card" routerLink="/etudiant/notes">
+        <span class="action-title">Notes</span>
+        <span class="action-sub">Suivre les evaluations</span>
+      </a>
+      <a class="action-card" routerLink="/etudiant/sessions">
+        <span class="action-title">Seances</span>
+        <span class="action-sub">Planning et salles</span>
+      </a>
+    </div>
+  </header>
+
+  <div class="summary-grid">
+    <article class="summary-card">
+      <div class="summary-head">
+        <span class="label">Moyenne generale</span>
+        <span class="pill soft">Echelle 0-20</span>
+      </div>
+      <strong>{{ vm.moyenneDisplay }}</strong>
+      <div class="meter">
+        <span class="meter-fill" [style.width.%]="vm.moyennePercent"></span>
+      </div>
+      <p>{{ vm.moyenneDisplay === '--' ? 'Aucune note calculee.' : 'Progression sur les notes disponibles.' }}</p>
+    </article>
+    <article class="summary-card">
+      <span class="label">Seances cette semaine</span>
+      <strong>{{ vm.seancesThisWeek }}</strong>
+      <p>{{ vm.seancesThisWeek === 0 ? 'Aucune seance planifiee.' : 'Preparez votre semaine.' }}</p>
+    </article>
+    <article class="summary-card accent">
+      <span class="label">Seances sans salle</span>
+      <strong>{{ vm.missingRoomCount }}</strong>
+      <p>Verifier les mises a jour du planning.</p>
+    </article>
   </div>
-  <div class="badge">Étudiant</div>
+
+  <div class="insight-grid">
+    <article class="insight-card">
+      <div class="insight-header">
+        <h3>Prochaine seance</h3>
+        <span class="badge">{{ vm.nextSeanceLabel }}</span>
+      </div>
+      <div *ngIf="vm.nextSeance; else noSeance" class="insight-body">
+        <p class="insight-title">{{ vm.nextSeance.coursTitre }}</p>
+        <p class="meta">
+          {{ vm.nextSeance.dateSeance | date: 'dd MMM' }} | {{ vm.nextSeance.heureDebut }} - {{ vm.nextSeance.heureFin }}
+        </p>
+        <p class="meta">Salle: {{ vm.nextSeance.salle || 'A definir' }}</p>
+      </div>
+      <ng-template #noSeance>
+        <p class="empty">Aucune seance planifiee pour l'instant.</p>
+      </ng-template>
+    </article>
+
+    <article class="insight-card">
+      <div class="insight-header">
+        <h3>Derniere note</h3>
+        <span class="badge">Evaluations</span>
+      </div>
+      <div *ngIf="vm.lastNote; else noNote" class="insight-body">
+        <p class="insight-title">{{ vm.lastNote.coursTitre }}</p>
+        <p class="meta">
+          {{ vm.lastNote.typeEvaluation }} |
+          {{ vm.lastNote.dateEvaluation ? (vm.lastNote.dateEvaluation | date: 'dd MMM') : 'Date a definir' }}
+        </p>
+        <span class="grade">{{ vm.lastNote.valeur }}</span>
+      </div>
+      <ng-template #noNote>
+        <p class="empty">Aucune note disponible.</p>
+      </ng-template>
+    </article>
+
+    <article class="insight-card">
+      <div class="insight-header">
+        <h3>Alertes rapides</h3>
+        <span class="badge">A suivre</span>
+      </div>
+      <ul class="micro-list">
+        <li>
+          <span>Seances prochaines (15 jours)</span>
+          <strong>{{ vm.seances.length }}</strong>
+        </li>
+        <li>
+          <span>Notes recentes</span>
+          <strong>{{ vm.notes.length }}</strong>
+        </li>
+        <li>
+          <span>Inscriptions actives</span>
+          <strong>{{ vm.inscriptionsActives }}</strong>
+        </li>
+      </ul>
+    </article>
+  </div>
+
+  <div class="panel-grid">
+    <section class="panel">
+      <div class="panel-header">
+        <h3>Prochaines seances</h3>
+        <span class="hint">15 jours</span>
+      </div>
+      <p class="empty" *ngIf="!vm.seances.length">Aucune seance planifiee.</p>
+      <ul class="list" *ngIf="vm.seances.length">
+        <li *ngFor="let seance of vm.seances">
+          <div>
+            <strong>{{ seance.coursTitre }}</strong>
+            <span>
+              {{ seance.dateSeance | date: 'dd MMM' }} | {{ seance.heureDebut }} - {{ seance.heureFin }}
+            </span>
+            <div class="tags">
+              <span class="tag">{{ seance.typeSeance | titlecase }}</span>
+              <span class="tag soft">{{ seance.statut | titlecase }}</span>
+            </div>
+          </div>
+          <span class="chip">{{ seance.salle || 'Salle a definir' }}</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="panel">
+      <div class="panel-header">
+        <h3>Dernieres notes</h3>
+        <span class="hint">Evaluations</span>
+      </div>
+      <p class="empty" *ngIf="!vm.notes.length">Aucune note disponible.</p>
+      <ul class="list" *ngIf="vm.notes.length">
+        <li *ngFor="let note of vm.notes">
+          <div>
+            <strong>{{ note.coursTitre }}</strong>
+            <span>
+              {{ note.typeEvaluation }} |
+              {{ note.dateEvaluation ? (note.dateEvaluation | date: 'dd MMM') : 'Date a definir' }}
+            </span>
+            <div class="tags" *ngIf="note.coefficient">
+              <span class="tag soft">Coeff {{ note.coefficient }}</span>
+            </div>
+          </div>
+          <span class="grade">{{ note.valeur }}</span>
+        </li>
+      </ul>
+    </section>
+  </div>
 </section>
 
-<section class="cards">
-  <article class="card">
-    <h3>Cours</h3>
-    <p>Retrouve les cours pour lesquels tu es inscrit et leurs ressources.</p>
-  </article>
-  <article class="card">
-    <h3>Notes</h3>
-    <p>Visualise rapidement tes évaluations et ta moyenne.</p>
-  </article>
-  <article class="card">
-    <h3>Planning</h3>
-    <p>Accède aux séances planifiées par tes formateurs.</p>
-  </article>
-</section>
+<ng-template #loading>
+  <section class="loading">Chargement des donnees...</section>
+</ng-template>

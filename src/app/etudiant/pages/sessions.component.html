@@ -1,28 +1,55 @@
-<section class="panel">
-  <header class="panel__header">
+<section class="sessions-page">
+  <header class="page-header">
     <div>
-      <p class="eyebrow">Sessions</p>
-      <h3>Mes seances planifiees</h3>
-      <p class="lede">Connecte cette page a l API des inscriptions pour afficher les prochaines seances.</p>
+      <h3>Planning & inscriptions</h3>
+      <p>Votre agenda sur 3 semaines et vos inscriptions en cours.</p>
     </div>
-    <div class="tag">GET /api/inscriptions/etudiant/{{ '{' }}id{{ '}' }}</div>
   </header>
 
-  <div class="content">
-    <article class="card">
-      <h4>Actions rapides</h4>
-      <ul>
-        <li *ngFor="let action of actions">{{ action }}</li>
-      </ul>
-    </article>
-    <article class="card">
-      <h4>Flux suggere</h4>
-      <p>Recupere les inscriptions actives (<code>?actives=true</code>), puis affiche la session courante pour chaque cours.</p>
-      <p>Utilise ces donnees pour alimenter un calendrier ou une timeline.</p>
-    </article>
-  </div>
+  <p class="error" *ngIf="error()">{{ error() }}</p>
+  <p class="loading" *ngIf="loading()">Chargement...</p>
 
-  <div class="empty">
-    <p>Les seances apparaitront ici une fois la connexion a l API en place.</p>
+  <div class="grid" *ngIf="!loading()">
+    <section class="panel">
+      <div class="panel-header">
+        <h3>Prochaines seances</h3>
+        <span class="hint">3 semaines</span>
+      </div>
+      <p class="empty" *ngIf="!seances().length">Aucune seance planifiee.</p>
+      <ul class="list" *ngIf="seances().length">
+        <li *ngFor="let seance of seances()">
+          <div>
+            <strong>{{ seance.coursTitre }}</strong>
+            <span>
+              {{ seance.dateSeance | date: 'dd MMM' }} ? {{ seance.heureDebut }} - {{ seance.heureFin }}
+            </span>
+          </div>
+          <span class="chip">{{ seance.salle || 'Salle a definir' }}</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="panel">
+      <div class="panel-header">
+        <h3>Mes inscriptions</h3>
+        <span class="hint">{{ inscriptions().length }} enregistrements</span>
+      </div>
+      <p class="empty" *ngIf="!inscriptions().length">Aucune inscription.</p>
+      <ul class="list" *ngIf="inscriptions().length">
+        <li *ngFor="let inscription of inscriptions()">
+          <div>
+            <strong>{{ inscription.coursTitre }}</strong>
+            <span>Statut: {{ inscription.statut }}</span>
+          </div>
+          <button
+            class="ghost"
+            *ngIf="inscription.statut === 'ACTIVE'"
+            (click)="annuler(inscription.id)"
+          >
+            Annuler
+          </button>
+        </li>
+      </ul>
+    </section>
   </div>
 </section>

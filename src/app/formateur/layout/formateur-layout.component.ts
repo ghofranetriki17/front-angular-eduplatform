@@ -10,20 +10,20 @@ interface NavItem {
 }
 
 @Component({
-  selector: 'app-etudiant-layout',
+  selector: 'app-formateur-layout',
   standalone: true,
   imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive],
-  templateUrl: './etudiant-layout.component.html',
-  styleUrl: './etudiant-layout.component.css'
+  templateUrl: './formateur-layout.component.html',
+  styleUrl: './formateur-layout.component.css'
 })
-export class EtudiantLayoutComponent {
+export class FormateurLayoutComponent {
   private readonly auth = inject(AuthService);
   readonly profile = this.auth.profile;
 
   readonly navItems: NavItem[] = [
-    { label: 'Tableau de bord', path: '/etudiant/dashboard', description: 'Vue globale et raccourcis' },
-    { label: 'Cours', path: '/etudiant/cours', description: 'Modules et inscriptions' },
-    { label: 'Notes', path: '/etudiant/notes', description: 'Moyennes et historique' },
-    { label: 'Planning', path: '/etudiant/sessions', description: 'Seances et statut' }
+    { label: 'Tableau de bord', path: '/formateur/dashboard', description: 'Synthese et alertes' },
+    { label: 'Cours', path: '/formateur/cours', description: 'Programmes et stats' },
+    { label: 'Notes', path: '/formateur/notes', description: 'Saisie et historique' },
+    { label: 'Seances', path: '/formateur/seances', description: 'Planning et statuts' }
   ];
 }

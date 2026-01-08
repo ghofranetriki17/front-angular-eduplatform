@@ -1,23 +1,166 @@
-<section class="hero">
-  <div>
-    <p class="eyebrow">Espace Formateur</p>
-    <h1>{{ greeting() }}</h1>
-    <p class="lede">Organisez vos cours, séances et notes. Le client Angular parle en Basic Auth au backend Spring.</p>
+<section class="dashboard" *ngIf="vm$ | async as vm; else loading">
+  <header class="hero">
+    <div class="hero-main">
+      <p class="eyebrow">Tableau de bord formateur</p>
+      <h2>Bonjour {{ profile()?.prenom || 'formateur' }}</h2>
+      <p class="subtitle">Synthese du {{ today | date: 'fullDate' }}</p>
+      <div class="hero-pills">
+        <span class="pill">Cours assures: {{ vm.coursAssures }}</span>
+        <span class="pill">Seances a venir: {{ vm.seances.length }}</span>
+        <span class="pill">Etudiants actifs: {{ vm.totalInscrits }}</span>
+      </div>
+    </div>
+    <div class="hero-actions">
+      <a class="action-card" routerLink="/formateur/cours">
+        <span class="action-title">Cours</span>
+        <span class="action-sub">Suivre les groupes</span>
+      </a>
+      <a class="action-card" routerLink="/formateur/seances">
+        <span class="action-title">Seances</span>
+        <span class="action-sub">Planning et statuts</span>
+      </a>
+      <a class="action-card" routerLink="/formateur/notes">
+        <span class="action-title">Notes</span>
+        <span class="action-sub">Saisies et bilans</span>
+      </a>
+    </div>
+  </header>
+
+  <div class="summary-grid">
+    <article class="summary-card">
+      <span class="label">Cours assures</span>
+      <strong>{{ vm.coursAssures }}</strong>
+      <p>Cours dont vous etes responsable.</p>
+    </article>
+    <article class="summary-card">
+      <span class="label">Seances planifiees</span>
+      <strong>{{ vm.seancesPlanifiees }}</strong>
+      <p>Seances a venir ou en preparation.</p>
+    </article>
+    <article class="summary-card accent">
+      <span class="label">Notes saisies</span>
+      <strong>{{ vm.notesSaisies }}</strong>
+      <p>Evaluations enregistrees.</p>
+    </article>
   </div>
-  <div class="badge">Formateur</div>
+
+  <div class="insight-grid">
+    <article class="insight-card">
+      <div class="insight-header">
+        <h3>Prochaine seance</h3>
+        <span class="badge">{{ vm.nextSeanceLabel }}</span>
+      </div>
+      <div *ngIf="vm.nextSeance; else noSeance" class="insight-body">
+        <p class="insight-title">{{ vm.nextSeance.coursTitre }}</p>
+        <p class="meta">
+          {{ vm.nextSeance.dateSeance | date: 'dd MMM' }} | {{ vm.nextSeance.heureDebut }} - {{ vm.nextSeance.heureFin }}
+        </p>
+        <p class="meta">Salle: {{ vm.nextSeance.salle || 'A definir' }}</p>
+        <div class="tags">
+          <span class="tag">{{ vm.nextSeance.typeSeance | titlecase }}</span>
+          <span class="tag soft">{{ vm.nextSeance.statut | titlecase }}</span>
+        </div>
+      </div>
+      <ng-template #noSeance>
+        <p class="empty">Aucune seance planifiee pour l'instant.</p>
+      </ng-template>
+    </article>
+
+    <article class="insight-card">
+      <div class="insight-header">
+        <h3>Cours a surveiller</h3>
+        <span class="badge">Taux faible</span>
+      </div>
+      <div *ngIf="vm.coursRisque.length; else noRisk" class="insight-body">
+        <ul class="risk-list">
+          <li *ngFor="let stat of vm.coursRisque">
+            <div>
+              <strong>{{ stat.coursTitre }}</strong>
+              <span>{{ stat.coursCode }}</span>
+            </div>
+            <span class="risk-score">{{ stat.tauxReussiteClamped | number: '1.0-0' }}%</span>
+          </li>
+        </ul>
+      </div>
+      <ng-template #noRisk>
+        <p class="empty">Aucun cours en alerte pour le moment.</p>
+      </ng-template>
+    </article>
+
+    <article class="insight-card">
+      <div class="insight-header">
+        <h3>Alertes rapides</h3>
+        <span class="badge">A suivre</span>
+      </div>
+      <ul class="micro-list">
+        <li>
+          <span>Seances sans salle</span>
+          <strong>{{ vm.missingRoomCount }}</strong>
+        </li>
+        <li>
+          <span>Seances cette semaine</span>
+          <strong>{{ vm.seancesThisWeek }}</strong>
+        </li>
+        <li>
+          <span>Notes saisies</span>
+          <strong>{{ vm.notesSaisies }}</strong>
+        </li>
+      </ul>
+    </article>
+  </div>
+
+  <div class="panel-grid">
+    <section class="panel">
+      <div class="panel-header">
+        <h3>Prochaines seances</h3>
+        <span class="hint">7 jours</span>
+      </div>
+      <p class="empty" *ngIf="!vm.seances.length">Aucune seance planifiee.</p>
+      <ul class="list" *ngIf="vm.seances.length">
+        <li *ngFor="let seance of vm.seances">
+          <div>
+            <strong>{{ seance.coursTitre }}</strong>
+            <span>
+              {{ seance.dateSeance | date: 'dd MMM' }} | {{ seance.heureDebut }} - {{ seance.heureFin }}
+            </span>
+            <div class="tags">
+              <span class="tag">{{ seance.typeSeance | titlecase }}</span>
+              <span class="tag soft">{{ seance.statut | titlecase }}</span>
+            </div>
+          </div>
+          <span class="chip">{{ seance.salle || 'Salle a definir' }}</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="panel">
+      <div class="panel-header">
+        <h3>Stats par cours</h3>
+        <span class="hint">Taux de reussite</span>
+      </div>
+      <p class="empty" *ngIf="!vm.stats.length">Aucune statistique.</p>
+      <ul class="stats-list" *ngIf="vm.stats.length">
+        <li *ngFor="let stat of vm.stats">
+          <div class="stats-head">
+            <div>
+              <strong>{{ stat.coursTitre }}</strong>
+              <span>{{ stat.coursCode }}</span>
+            </div>
+            <span class="stats-score">{{ stat.tauxReussiteClamped | number: '1.0-0' }}%</span>
+          </div>
+          <div class="stats-meta">
+            <span>{{ stat.inscritsActifs }} inscrits</span>
+            <span *ngIf="stat.moyenne != null">Moyenne: {{ stat.moyenne | number: '1.1-2' }}</span>
+          </div>
+          <div class="progress">
+            <span class="progress-fill" [style.width.%]="stat.tauxReussiteClamped"></span>
+          </div>
+        </li>
+      </ul>
+    </section>
+  </div>
 </section>
 
-<section class="cards">
-  <article class="card">
-    <h3>Emploi du temps</h3>
-    <p>Planifiez vos séances et partagez-les avec les groupes.</p>
-  </article>
-  <article class="card">
-    <h3>Notes</h3>
-    <p>Saisissez et mettez à jour les évaluations des étudiants.</p>
-  </article>
-  <article class="card">
-    <h3>Groupes & cours</h3>
-    <p>Accédez rapidement aux groupes, spécialités et cours assignés.</p>
-  </article>
-</section>
+<ng-template #loading>
+  <section class="loading">Chargement des donnees...</section>
+</ng-template>

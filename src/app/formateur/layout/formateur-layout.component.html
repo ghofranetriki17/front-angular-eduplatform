@@ -1,8 +1,8 @@
 <section class="hero">
   <div>
-    <p class="eyebrow">Espace Etudiant</p>
-    <h2>Bienvenue {{ profile()?.prenom || 'Etudiant' }} {{ profile()?.nom || '' }}</h2>
-    <p class="lede">Accedez a vos cours, notes, inscriptions et planning en un coup d'oeil.</p>
+    <p class="eyebrow">Espace Formateur</p>
+    <h2>Bonjour {{ profile()?.prenom || 'Formateur' }} {{ profile()?.nom || '' }}</h2>
+    <p class="lede">Pilotez vos cours, vos seances et la saisie des notes en temps reel.</p>
   </div>
   <div class="badge" *ngIf="profile() as p">
     <span class="role">{{ p.role }}</span>

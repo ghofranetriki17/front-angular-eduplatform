@@ -1,29 +1,37 @@
-<section class="panel">
-  <header class="panel__header">
+<section class="notes-page">
+  <header class="page-header">
     <div>
-      <p class="eyebrow">Notes</p>
-      <h3>Suivre mes evaluations</h3>
-      <p class="lede">Les notes de chaque cours s afficheront ici des que l API sera connectee.</p>
+      <h3>Notes et moyennes</h3>
+      <p>Consultez vos evaluations et la moyenne par cours.</p>
     </div>
-    <div class="tag">GET /api/notes/etudiant/{{ '{' }}id{{ '}' }}</div>
   </header>
 
-  <div class="content">
-    <article class="card">
-      <h4>Actions rapides</h4>
-      <ul>
-        <li *ngFor="let item of checkpoints">{{ item }}</li>
-      </ul>
-    </article>
-    <article class="card">
-      <h4>A connecter</h4>
-      <p>Connecte ce bloc a <code>/api/notes/etudiant/{{ '{' }}id{{ '}' }}</code> pour recuperer les notes.</p>
-      <p>Utilise le guard actuel pour recuperer l identifiant et passer le Basic Auth.</p>
+  <p class="loading" *ngIf="loading()">Chargement...</p>
+
+  <div class="moyenne-grid" *ngIf="!loading()">
+    <article class="moyenne-card" *ngFor="let item of moyennes()">
+      <div>
+        <h4>{{ item.coursTitre }}</h4>
+        <span class="code">{{ item.coursCode }}</span>
+      </div>
+      <strong>{{ item.moyenne | number: '1.1-2' }}</strong>
     </article>
   </div>
 
-  <div class="empty">
-    <p>Aucune note chargee pour le moment.</p>
-    <p>Ajoute l appel HTTP ici ou rafraichis quand la connexion sera en place.</p>
-  </div>
+  <section class="panel" *ngIf="!loading()">
+    <div class="panel-header">
+      <h3>Historique des notes</h3>
+      <span class="hint">{{ notes().length }} notes</span>
+    </div>
+    <p class="empty" *ngIf="!notes().length">Aucune note disponible.</p>
+    <ul class="list" *ngIf="notes().length">
+      <li *ngFor="let note of notes()">
+        <div>
+          <strong>{{ note.coursTitre }}</strong>
+          <span>{{ note.typeEvaluation }} ? {{ note.dateEvaluation | date: 'dd MMM' }}</span>
+        </div>
+        <span class="grade">{{ note.valeur }}</span>
+      </li>
+    </ul>
+  </section>
 </section>
