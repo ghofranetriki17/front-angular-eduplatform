@@ -31,6 +31,9 @@ export interface NoteResponse {
   commentaire?: string | null;
   coursCode: string;
   coursTitre: string;
+  etudiantId?: number | null;
+  etudiantNom?: string | null;
+  etudiantPrenom?: string | null;
 }
 
 export interface SeanceResponse {

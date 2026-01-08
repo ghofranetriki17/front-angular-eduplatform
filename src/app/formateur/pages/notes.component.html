@@ -57,7 +57,9 @@
         <li *ngFor="let note of notesFiltrees()">
           <div>
             <strong>{{ note.coursTitre }}</strong>
-            <span>{{ note.typeEvaluation }} ? {{ note.dateEvaluation | date: 'dd MMM' }}</span>
+            <span>
+              {{ note.etudiantPrenom || 'Etudiant' }} {{ note.etudiantNom || '' }} | {{ note.typeEvaluation }} | {{ note.dateEvaluation | date: 'dd MMM' }}
+            </span>
           </div>
           <span class="grade">{{ note.valeur }}</span>
         </li>
