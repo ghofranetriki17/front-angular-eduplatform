@@ -4,9 +4,12 @@
     <h2>Bonjour {{ profile()?.prenom || 'Formateur' }} {{ profile()?.nom || '' }}</h2>
     <p class="lede">Pilotez vos cours, vos seances et la saisie des notes en temps reel.</p>
   </div>
-  <div class="badge" *ngIf="profile() as p">
-    <span class="role">{{ p.role }}</span>
-    <span class="email">{{ p.email }}</span>
+  <div class="hero-actions">
+    <app-notification-bell></app-notification-bell>
+    <div class="badge" *ngIf="profile() as p">
+      <span class="role">{{ p.role }}</span>
+      <span class="email">{{ p.email }}</span>
+    </div>
   </div>
 </section>
 

@@ -18,7 +18,7 @@
   box-shadow: var(--shadow-lg);
   animation: floatIn 0.5s ease;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .hero::before {
@@ -63,6 +63,15 @@
   color: var(--muted);
   font-size: 16px;
   line-height: 1.7;
+}
+
+/* 🔔 Hero Actions */
+.hero-actions {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  position: relative;
+  z-index: 100;
 }
 
 /* 🏷️ User Badge */

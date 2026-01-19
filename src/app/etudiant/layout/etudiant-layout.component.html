@@ -4,9 +4,12 @@
     <h2>Bienvenue {{ profile()?.prenom || 'Etudiant' }} {{ profile()?.nom || '' }}</h2>
     <p class="lede">Accedez a vos cours, notes, inscriptions et planning en un coup d'oeil.</p>
   </div>
-  <div class="badge" *ngIf="profile() as p">
-    <span class="role">{{ p.role }}</span>
-    <span class="email">{{ p.email }}</span>
+  <div class="hero-actions">
+    <app-notification-bell></app-notification-bell>
+    <div class="badge" *ngIf="profile() as p">
+      <span class="role">{{ p.role }}</span>
+      <span class="email">{{ p.email }}</span>
+    </div>
   </div>
 </section>
 
