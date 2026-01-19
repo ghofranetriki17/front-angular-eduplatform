@@ -24,9 +24,8 @@
           </span>
         </div>
         <div class="actions">
-          <span class="chip">{{ seance.salle || 'Salle a definir' }}</span>
-          <select [value]="seance.statut" (change)="updateStatut(seance, $any($event.target).value)">
-            <option *ngFor="let statut of statuts" [value]="statut">{{ statut }}</option>
+          <select (change)="updateStatut(seance, $any($event.target).value)">
+            <option *ngFor="let statut of statuts" [value]="statut" [selected]="statut === seance.statut">{{ statut }}</option>
           </select>
         </div>
       </li>

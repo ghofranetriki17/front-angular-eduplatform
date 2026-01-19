@@ -1,27 +1,40 @@
 .sessions-page {
   display: grid;
-  gap: 16px;
+  gap: 28px;
+}
+
+.page-header h3 {
+  font-size: 22px;
+  font-weight: 800;
 }
 
 .page-header p {
-  margin: 4px 0 0;
+  margin: 8px 0 0;
   color: var(--muted);
+  font-size: 15px;
 }
 
+/* 📊 Grid */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 22px;
 }
 
+/* 📝 Panel */
 .panel {
   background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-lg);
-  padding: 16px;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  padding: 24px;
   display: grid;
-  gap: 12px;
-  box-shadow: 0 12px 28px rgba(20, 21, 32, 0.08);
+  gap: 18px;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition);
+}
+
+.panel:hover {
+  box-shadow: var(--shadow);
 }
 
 .panel-header {
@@ -30,68 +43,109 @@
   align-items: baseline;
 }
 
-.hint {
-  font-size: 12px;
-  color: var(--muted);
+.panel-header h3 {
+  font-size: 17px;
+  font-weight: 700;
 }
 
+.hint {
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+/* 📋 List */
 .list {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
-  gap: 10px;
+  gap: 14px;
 }
 
 .list li {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: var(--surface-2);
-  border-radius: var(--radius-md);
-  padding: 10px 12px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 16px 18px;
+  transition: all var(--transition);
+}
+
+.list li:hover {
+  background: var(--surface-hover);
+  transform: translateX(4px);
+  border-color: rgba(249, 115, 22, 0.3);
 }
 
 .list li strong {
   display: block;
-  font-size: 14px;
+  font-size: 15px;
   color: var(--ink);
+  font-weight: 700;
 }
 
 .list li span {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--muted);
 }
 
 .chip {
   font-size: 12px;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: rgba(14, 161, 124, 0.12);
-  color: var(--accent-2);
-  border: 1px solid rgba(14, 161, 124, 0.3);
-}
-
-.ghost {
-  border: 1px solid var(--accent);
-  background: transparent;
-  color: var(--accent);
-  padding: 6px 12px;
-  border-radius: 999px;
-  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.1), rgba(251, 146, 60, 0.05));
+  color: var(--primary);
+  border: 1px solid rgba(249, 115, 22, 0.25);
   font-weight: 600;
 }
 
+/* 🔘 Ghost Button - Orange Admin Style */
+.ghost {
+  border: 2px solid rgba(249, 115, 22, 0.3);
+  background: transparent;
+  color: var(--primary);
+  padding: 10px 18px;
+  border-radius: 50px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 14px;
+  transition: all var(--transition);
+}
+
+.ghost:hover {
+  background: var(--gradient-1);
+  border-color: transparent;
+  color: #fff;
+  box-shadow: var(--shadow-primary);
+  transform: translateY(-2px);
+}
+
 .error {
-  color: #b42318;
+  color: var(--danger);
   margin: 0;
+  padding: 14px 18px;
+  background: rgba(239, 68, 68, 0.1);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  font-weight: 500;
 }
 
 .loading {
   color: var(--muted);
+  padding: 28px;
+  text-align: center;
+  font-size: 15px;
 }
 
 .empty {
   color: var(--muted);
   margin: 0;
+  padding: 24px;
+  text-align: center;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-lg);
+  border: 2px dashed var(--glass-border);
 }

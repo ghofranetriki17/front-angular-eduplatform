@@ -3,105 +3,189 @@
   color: var(--ink);
 }
 
+/* 👨‍🏫 Hero Section - Formateur Dark Admin Style */
 .hero {
   display: flex;
   justify-content: space-between;
-  gap: 16px;
+  gap: 24px;
   align-items: flex-start;
-  background: linear-gradient(120deg, rgba(14, 161, 124, 0.16), rgba(255, 122, 0, 0.1));
-  border: 1px solid var(--line);
-  border-radius: var(--radius-lg);
-  padding: 20px;
-  box-shadow: var(--shadow);
+  background: var(--glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-2xl);
+  padding: 32px;
+  box-shadow: var(--shadow-lg);
   animation: floatIn 0.5s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--gradient-1);
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  top: -30%;
+  right: -10%;
+  width: 250px;
+  height: 250px;
+  background: radial-gradient(circle, rgba(249, 115, 22, 0.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.eyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-size: 12px;
+  color: var(--primary);
+  font-weight: 700;
 }
 
 .hero h2 {
-  margin: 6px 0 8px;
+  margin: 12px 0 10px;
+  font-size: 28px;
+  color: var(--ink);
+  font-weight: 800;
 }
 
 .lede {
   margin: 0;
   color: var(--muted);
+  font-size: 16px;
+  line-height: 1.7;
 }
 
+/* 🏷️ User Badge */
 .badge {
-  padding: 12px 14px;
-  border-radius: var(--radius-md);
+  padding: 18px 22px;
+  border-radius: var(--radius-lg);
   background: var(--surface);
-  border: 1px solid var(--line);
+  border: 1px solid var(--glass-border);
   display: grid;
-  gap: 6px;
-  min-width: 190px;
+  gap: 10px;
+  min-width: 220px;
   text-align: right;
+  position: relative;
+  z-index: 1;
+  box-shadow: var(--shadow-sm);
 }
 
 .badge .role {
-  font-size: 12px;
-  letter-spacing: 0.12em;
+  font-size: 11px;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: var(--accent-2);
+  color: var(--primary);
+  font-weight: 700;
 }
 
 .badge .email {
-  color: var(--ink-soft);
+  color: var(--muted);
   word-break: break-all;
+  font-size: 14px;
+  font-weight: 500;
 }
 
+/* 🔗 Navigation Grid - Orange Admin Style */
 .nav-grid {
-  margin: 18px 0 12px;
+  margin: 28px 0 20px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
 }
 
 .nav-grid a {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding: 14px 16px;
+  gap: 10px;
+  padding: 22px 24px;
   text-decoration: none;
-  color: var(--ink-soft);
+  color: var(--muted);
   background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-md);
-  transition: all 0.2s ease;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  transition: all var(--transition);
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.nav-grid a::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--gradient-1);
+  opacity: 0;
+  transition: opacity var(--transition);
 }
 
 .nav-grid a:hover {
-  transform: translateY(-1px);
-  border-color: rgba(14, 161, 124, 0.5);
-  box-shadow: 0 12px 26px rgba(14, 161, 124, 0.14);
+  transform: translateY(-4px);
+  border-color: rgba(249, 115, 22, 0.3);
+  box-shadow: var(--shadow-lg);
+}
+
+.nav-grid a:hover::before {
+  opacity: 1;
 }
 
 .nav-grid a.active {
-  border-color: var(--accent-2);
+  border-color: var(--primary);
   color: var(--ink);
-  background: linear-gradient(180deg, rgba(14, 161, 124, 0.08), #fff);
-  box-shadow: 0 14px 32px rgba(14, 161, 124, 0.18);
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.1), rgba(251, 146, 60, 0.05));
+  box-shadow: var(--shadow), 0 8px 32px rgba(249, 115, 22, 0.2);
+}
+
+.nav-grid a.active::before {
+  opacity: 1;
 }
 
 .nav-grid .label {
   font-weight: 700;
-  letter-spacing: 0.01em;
+  font-size: 16px;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  position: relative;
+  z-index: 1;
 }
 
 .nav-grid .hint {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--muted);
+  position: relative;
+  z-index: 1;
 }
 
 .content {
-  margin-top: 8px;
+  margin-top: 16px;
+  animation: fadeIn 0.4s ease 0.2s both;
 }
 
+/* 📱 Responsive */
 @media (max-width: 720px) {
   .hero {
     flex-direction: column;
+    padding: 24px;
   }
 
   .badge {
     width: 100%;
     text-align: left;
+  }
+  
+  .nav-grid {
+    grid-template-columns: 1fr;
   }
 }

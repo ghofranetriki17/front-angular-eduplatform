@@ -45,8 +45,9 @@ export class FormateurApiService {
   }
 
   updateSeanceStatut(id: number, statut: SeanceStatut) {
+    // POST avec statut comme query parameter
     const params = new HttpParams().set('statut', statut);
-    return this.http.post<void>(`${this.baseUrl}/seances/${id}/statut`, {}, { params });
+    return this.http.post<void>(`${this.baseUrl}/seances/${id}/statut`, null, { params });
   }
 
   getNotes() {
