@@ -83,6 +83,12 @@
   gap: 16px;
 }
 
+.card-actions {
+  display: grid;
+  justify-items: end;
+  gap: 8px;
+}
+
 .card-header h4 {
   margin: 0;
   font-size: 18px;
@@ -115,6 +121,14 @@
   font-weight: 700;
   white-space: nowrap;
   box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+}
+
+.ghost.ghost-sm {
+  padding: 8px 14px;
+  font-size: 12px;
+  border-radius: 999px;
+  border-width: 1px;
+  white-space: nowrap;
 }
 
 .meta {

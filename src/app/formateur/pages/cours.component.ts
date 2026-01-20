@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { forkJoin } from 'rxjs';
+import { AuthService } from '../../core/auth.service';
 import { FormateurApiService } from '../../core/services/formateur-api.service';
 import { CoursResponse, CoursStatsResponse, EtudiantResponse } from '../../core/models/api.models';
 import { NavbarNotificationService } from '../../core/services/navbar-notification.service';
@@ -13,6 +14,7 @@ import { NavbarNotificationService } from '../../core/services/navbar-notificati
   styleUrl: './cours.component.css'
 })
 export class FormateurCoursComponent {
+  private readonly auth = inject(AuthService);
   private readonly navNotification = inject(NavbarNotificationService);
   
   readonly cours = signal<CoursResponse[]>([]);
@@ -42,16 +44,36 @@ export class FormateurCoursComponent {
   }
 
   private notifyInscribedStudents(cours: CoursResponse, etudiants: EtudiantResponse[]) {
-    const notifiedKey = `notified_students_${cours.code}`;
-    const notified = new Set(JSON.parse(localStorage.getItem(notifiedKey) || '[]'));
+    const profile = this.auth.profile();
+    const scope = profile ? `${profile.role.toLowerCase()}_${profile.id}` : 'guest';
+    const notifiedKey = `notified_students_${scope}_${cours.code}`;
+    const knownKey = `known_students_${scope}_${cours.code}`;
+    const notified = new Set<number>(JSON.parse(localStorage.getItem(notifiedKey) || '[]'));
+    const known = JSON.parse(localStorage.getItem(knownKey) || '[]') as Array<{
+      id: number;
+      nom: string;
+      prenom: string;
+      email: string;
+    }>;
+    const currentIds = new Set(etudiants.map(etudiant => etudiant.id));
+    const removedStudents = known.filter(student => !currentIds.has(student.id)).slice(0, 5);
     
-    const newStudents = etudiants.filter(e => !notified.has(e.id)).slice(0, 5);
+    removedStudents.forEach(student => {
+      this.navNotification.addFormateurDesinscription(
+        `${student.prenom} ${student.nom}`,
+        student.email,
+        cours.titre,
+        cours.code
+      );
+      notified.delete(student.id);
+    });
+
+    const newStudents = etudiants.filter(etudiant => !notified.has(etudiant.id)).slice(0, 5);
     
     newStudents.forEach(etudiant => {
-      this.navNotification.addFormateurEtudiantInscrit(
+      this.navNotification.addFormateurNewInscription(
         `${etudiant.prenom} ${etudiant.nom}`,
         etudiant.email,
-        etudiant.matricule,
         cours.titre,
         cours.code,
         etudiant.groupeNom ?? undefined
@@ -60,6 +82,13 @@ export class FormateurCoursComponent {
     });
     
     localStorage.setItem(notifiedKey, JSON.stringify([...notified]));
+    const snapshot = etudiants.map(etudiant => ({
+      id: etudiant.id,
+      nom: etudiant.nom,
+      prenom: etudiant.prenom,
+      email: etudiant.email
+    }));
+    localStorage.setItem(knownKey, JSON.stringify(snapshot));
   }
 
   downloadReport(cours: CoursResponse) {

@@ -78,6 +78,7 @@ export class NotificationBellComponent {
   readonly selectedNotif = signal<NavNotification | null>(null);
   
   private overlay: HTMLDivElement | null = null;
+  private backdrop: HTMLDivElement | null = null;
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: Event) {
@@ -109,11 +110,48 @@ export class NotificationBellComponent {
 
   private createOverlay() {
     if (this.overlay) return;
-    
-    const rect = this.bellBtn.nativeElement.getBoundingClientRect();
-    
+
     this.overlay = document.createElement('div');
     this.overlay.innerHTML = this.getDropdownHTML();
+    document.body.appendChild(this.overlay);
+    this.appendOverlayStyles();
+    this.applyOverlayLayout();
+    this.attachEventListeners();
+  }
+
+  private removeOverlay() {
+    if (this.overlay) {
+      this.overlay.remove();
+      this.overlay = null;
+    }
+    this.removeBackdrop();
+  }
+
+  private applyOverlayLayout() {
+    if (!this.overlay) return;
+
+    const isDetail = !!this.selectedNotif();
+    if (isDetail) {
+      this.ensureBackdrop();
+      this.overlay.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        width: min(560px, calc(100vw - 32px));
+        max-height: min(720px, calc(100vh - 80px));
+        transform: translate(-50%, -50%);
+        background: white;
+        border-radius: 24px;
+        box-shadow: 0 45px 90px rgba(15,23,42,0.35), 0 0 0 1px rgba(15,23,42,0.08);
+        z-index: 999999;
+        overflow: auto;
+        animation: detailPop 0.2s ease;
+      `;
+      return;
+    }
+
+    this.removeBackdrop();
+    const rect = this.bellBtn.nativeElement.getBoundingClientRect();
     this.overlay.style.cssText = `
       position: fixed;
       top: ${rect.bottom + 12}px;
@@ -127,25 +165,44 @@ export class NotificationBellComponent {
       overflow: hidden;
       animation: dropdownSlide 0.25s ease;
     `;
-    
-    // Add animation keyframes
+  }
+
+  private appendOverlayStyles() {
+    if (!this.overlay) return;
+    this.overlay.querySelector('style[data-notif-style]')?.remove();
     const style = document.createElement('style');
+    style.setAttribute('data-notif-style', 'true');
     style.textContent = `
       @keyframes dropdownSlide {
         from { opacity: 0; transform: translateY(-15px); }
         to { opacity: 1; transform: translateY(0); }
       }
+
+      @keyframes detailPop {
+        from { opacity: 0; transform: translate(-50%, -48%) scale(0.98); }
+        to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      }
     `;
     this.overlay.appendChild(style);
-    
-    document.body.appendChild(this.overlay);
-    this.attachEventListeners();
   }
 
-  private removeOverlay() {
-    if (this.overlay) {
-      this.overlay.remove();
-      this.overlay = null;
+  private ensureBackdrop() {
+    if (this.backdrop) return;
+    this.backdrop = document.createElement('div');
+    this.backdrop.style.cssText = `
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.45);
+      backdrop-filter: blur(2px);
+      z-index: 999998;
+    `;
+    document.body.appendChild(this.backdrop);
+  }
+
+  private removeBackdrop() {
+    if (this.backdrop) {
+      this.backdrop.remove();
+      this.backdrop = null;
     }
   }
 
@@ -200,10 +257,9 @@ export class NotificationBellComponent {
 
   private updateOverlay() {
     if (!this.overlay) return;
-    const rect = this.bellBtn.nativeElement.getBoundingClientRect();
     this.overlay.innerHTML = this.getDropdownHTML();
-    this.overlay.style.top = `${rect.bottom + 12}px`;
-    this.overlay.style.right = `${window.innerWidth - rect.right}px`;
+    this.appendOverlayStyles();
+    this.applyOverlayLayout();
     this.attachEventListeners();
   }
 
@@ -216,7 +272,7 @@ export class NotificationBellComponent {
     }
 
     return `
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:18px 22px;background:linear-gradient(135deg,#f8fafc,#f1f5f9);border-bottom:1px solid #e2e8f0;">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:20px 24px;background:linear-gradient(135deg,#fff7ed,#ffedd5);border-bottom:1px solid #fed7aa;">
         <span style="font-size:17px;font-weight:700;color:#1e293b;">🔔 Notifications</span>
         <div style="display:flex;gap:10px;">
           ${this.service.hasUnread() ? `<button class="mark-read-btn" style="background:none;border:none;font-size:13px;font-weight:600;color:#f97316;cursor:pointer;padding:6px 12px;border-radius:8px;">Tout lire</button>` : ''}
@@ -248,7 +304,7 @@ export class NotificationBellComponent {
 
   private getDetailHTML(n: NavNotification): string {
     return `
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:18px 22px;background:linear-gradient(135deg,#f8fafc,#f1f5f9);border-bottom:1px solid #e2e8f0;">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:20px 24px;background:linear-gradient(135deg,#fff7ed,#ffedd5);border-bottom:1px solid #fed7aa;">
         <button class="back-btn" style="background:none;border:none;font-size:14px;font-weight:600;color:#475569;cursor:pointer;padding:6px 12px;border-radius:8px;">← Retour</button>
         <button class="delete-btn" style="background:none;border:none;font-size:13px;font-weight:600;color:#ef4444;cursor:pointer;padding:6px 12px;border-radius:8px;">Supprimer</button>
       </div>
@@ -260,7 +316,9 @@ export class NotificationBellComponent {
       <div style="padding:20px 24px 30px;background:white;">
         <div style="margin-bottom:20px;">
           <label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#94a3b8;margin-bottom:8px;">Message</label>
-          <p style="margin:0;font-size:14px;color:#334155;line-height:1.6;">${n.message}</p>
+          <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:14px 16px;">
+            <p style="margin:0;font-size:15px;color:#0f172a;line-height:1.7;">${n.message}</p>
+          </div>
         </div>
         ${n.details ? `
           <div style="margin-bottom:20px;">

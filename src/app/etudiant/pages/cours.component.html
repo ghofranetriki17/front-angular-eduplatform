@@ -17,7 +17,16 @@
           <h4>{{ item.titre }}</h4>
           <span class="code">{{ item.code }}</span>
         </div>
-        <span class="badge">{{ item.inscritsActifs }} inscrits</span>
+        <div class="card-actions">
+          <span class="badge">{{ item.inscritsActifs }} inscrits</span>
+          <button
+            class="ghost ghost-sm"
+            *ngIf="canDesinscrire(item)"
+            (click)="desinscrire(item)"
+          >
+            Se desinscrire
+          </button>
+        </div>
       </div>
       <p>{{ item.description || 'Description a venir.' }}</p>
       <div class="meta">

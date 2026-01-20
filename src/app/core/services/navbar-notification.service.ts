@@ -1,4 +1,5 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, signal, computed, effect } from '@angular/core';
+import { AuthService } from '../auth.service';
 
 export interface NavNotification {
   id: number;
@@ -16,14 +17,22 @@ export interface NavNotification {
 export class NavbarNotificationService {
   private readonly _notifications = signal<NavNotification[]>([]);
   private nextId = 1;
+  private activeKey: string | null = null;
 
   readonly notifications = computed(() => this._notifications());
   readonly unreadCount = computed(() => this._notifications().filter(n => !n.read).length);
   readonly hasUnread = computed(() => this.unreadCount() > 0);
 
-  constructor() {
+  constructor(private readonly auth: AuthService) {
     // Charger les notifications depuis localStorage au démarrage
-    this.loadFromStorage();
+    effect(() => {
+      const key = this.buildStorageKey();
+      if (key === this.activeKey) {
+        return;
+      }
+      this.activeKey = key;
+      this.loadFromStorage();
+    });
   }
 
   /**
@@ -167,7 +176,10 @@ export class NavbarNotificationService {
 
   private saveToStorage(): void {
     try {
-      localStorage.setItem('nav_notifications', JSON.stringify(this._notifications()));
+      if (!this.activeKey) {
+        return;
+      }
+      localStorage.setItem(this.activeKey, JSON.stringify(this._notifications()));
     } catch {
       // Ignorer les erreurs de stockage
     }
@@ -175,19 +187,33 @@ export class NavbarNotificationService {
 
   private loadFromStorage(): void {
     try {
-      const stored = localStorage.getItem('nav_notifications');
-      if (stored) {
-        const parsed = JSON.parse(stored) as NavNotification[];
-        // Convertir les dates string en Date objects
-        const notifications = parsed.map(n => ({
-          ...n,
-          timestamp: new Date(n.timestamp)
-        }));
-        this._notifications.set(notifications);
-        this.nextId = Math.max(...notifications.map(n => n.id), 0) + 1;
+      this._notifications.set([]);
+      this.nextId = 1;
+      if (!this.activeKey) {
+        return;
       }
+      const stored = localStorage.getItem(this.activeKey);
+      if (!stored) {
+        return;
+      }
+      const parsed = JSON.parse(stored) as NavNotification[];
+      // Convertir les dates string en Date objects
+      const notifications = parsed.map(n => ({
+        ...n,
+        timestamp: new Date(n.timestamp)
+      }));
+      this._notifications.set(notifications);
+      this.nextId = Math.max(...notifications.map(n => n.id), 0) + 1;
     } catch {
       // Ignorer les erreurs de lecture
     }
+  }
+
+  private buildStorageKey(): string | null {
+    const profile = this.auth.profile();
+    if (!profile) {
+      return null;
+    }
+    return `nav_notifications_${profile.role.toLowerCase()}_${profile.id}`;
   }
 }
